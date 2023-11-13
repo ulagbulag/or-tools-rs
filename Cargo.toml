@@ -81,17 +81,7 @@ authors = ["Ho Kim <ho.kim@ulagbulag.io>"]
 description = "Unofficial Rust wrappers to the C++ library Google OR-Tools, open source software for combinatorial optimization"
 documentation = "https://docs.rs/or-tools"
 edition = "2021"
-keywords = [
-    "bop",
-    "csp",
-    "graph",
-    "linear-solver",
-    "optimization",
-    "or-tools",
-    "routing",
-    "sat",
-    "wrapper",
-]
+keywords = ["csp", "linear-solver", "optimization", "or-tools", "sat"]
 license = "Apache-2.0"
 readme = "./README.md"
 rust-version = "1.73"
