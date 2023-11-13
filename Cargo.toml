@@ -81,12 +81,22 @@ authors = ["Ho Kim <ho.kim@ulagbulag.io>"]
 description = "Unofficial Rust wrappers to the C++ library Google OR-Tools, open source software for combinatorial optimization"
 documentation = "https://docs.rs/or-tools"
 edition = "2021"
-keywords = ["combinatorial optimization", "or-tools", "wrapper"]
+keywords = [
+    "bop",
+    "csp",
+    "graph",
+    "linear-solver",
+    "optimization",
+    "or-tools",
+    "routing",
+    "sat",
+    "wrapper",
+]
 license = "Apache-2.0"
 readme = "./README.md"
 rust-version = "1.73"
-homepage = "https://github.com/ulagbulag/OpenARK"
-repository = "https://github.com/ulagbulag/OpenARK"
+homepage = "https://github.com/ulagbulag/or-tools-rs"
+repository = "https://github.com/ulagbulag/or-tools-rs"
 version = "0.1.0"
 
 [workspace.dependencies]
