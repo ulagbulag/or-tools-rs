@@ -45,12 +45,7 @@ Besides, you may claim us whether the specific platform should support it throug
 
 #### Building Dependencies
 
-- COIN-OR solvers
 - git
-- Google Abseil-cpp
-- Google Protobuf
-- SCIP
-- zlib
 
 ### Building Native library
 
