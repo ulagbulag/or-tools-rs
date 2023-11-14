@@ -1,5 +1,7 @@
 use std::marker::PhantomData;
 
+use super::ebert_graph::{ArcIndex, FlowQuantity, NodeIndex, StarGraph};
+
 // IMPORT CXX LIBRARY
 cpp! {{
     #include "ortools/graph/max_flow.h"
@@ -21,11 +23,7 @@ pub struct MaxFlow<'graph> {
 
 impl<'graph> MaxFlow<'graph> {
     /// Creates a new `MaxFlow` struct.
-    pub fn new(
-        graph: &'graph super::StarGraph,
-        source: super::NodeIndex,
-        target: super::NodeIndex,
-    ) -> Self {
+    pub fn new(graph: &'graph StarGraph, source: NodeIndex, target: NodeIndex) -> Self {
         Self {
             _graph: PhantomData,
             inner: unsafe {
@@ -42,8 +40,23 @@ impl<'graph> MaxFlow<'graph> {
         }
     }
 
+    /// Returns the graph associated to the current object.
+    pub fn graph(&self) -> &StarGraph {
+        let inner = self.inner.as_ref();
+
+        unsafe {
+            cpp!([
+                inner as "const operations_research::MaxFlow*"
+            ] -> &StarGraph as "const operations_research::StarGraph*"
+                {
+                    return inner->graph();
+                }
+            )
+        }
+    }
+
     /// Change the capacity of an arc.
-    pub fn set_arc_capacity(&mut self, arc: super::ArcIndex, capacity: super::FlowQuantity) {
+    pub fn set_arc_capacity(&mut self, arc: ArcIndex, capacity: FlowQuantity) {
         let inner = self.inner.as_mut();
 
         unsafe {
@@ -60,7 +73,7 @@ impl<'graph> MaxFlow<'graph> {
     }
 
     // Sets the flow for arc.
-    pub fn set_arc_flow(&mut self, arc: super::ArcIndex, flow: super::FlowQuantity) {
+    pub fn set_arc_flow(&mut self, arc: ArcIndex, flow: FlowQuantity) {
         let inner = self.inner.as_mut();
 
         unsafe {
@@ -106,13 +119,13 @@ pub struct MaxFlowOutput<'graph, 'solver> {
 
 impl<'graph, 'solver> MaxFlowOutput<'graph, 'solver> {
     /// Returns the total flow found by the algorithm.
-    pub fn get_optimal_flow(&self) -> super::FlowQuantity {
+    pub fn get_optimal_flow(&self) -> FlowQuantity {
         let inner = self.solver.inner.as_ref();
 
         unsafe {
             cpp!([
                 inner as "const operations_research::MaxFlow*"
-            ] -> super::FlowQuantity as "operations_research::FlowQuantity"
+            ] -> FlowQuantity as "operations_research::FlowQuantity"
                 {
                     return inner->GetOptimalFlow();
                 }
@@ -122,14 +135,14 @@ impl<'graph, 'solver> MaxFlowOutput<'graph, 'solver> {
 
     /// Returns the flow on arc using the equations given in the comment on
     /// residual_arc_capacity_.
-    pub fn flow(&self, arc: super::ArcIndex) -> super::FlowQuantity {
+    pub fn flow(&self, arc: ArcIndex) -> FlowQuantity {
         let inner = self.solver.inner.as_ref();
 
         unsafe {
             cpp!([
                 inner as "const operations_research::MaxFlow*",
                 arc as "operations_research::ArcIndex"
-            ] -> super::FlowQuantity as "operations_research::FlowQuantity"
+            ] -> FlowQuantity as "operations_research::FlowQuantity"
                 {
                     return inner->Flow(arc);
                 }
@@ -139,14 +152,14 @@ impl<'graph, 'solver> MaxFlowOutput<'graph, 'solver> {
 
     /// Returns the capacity of arc using the equations given in the comment on
     /// residual_arc_capacity_.
-    pub fn capacity(&self, arc: super::ArcIndex) -> super::FlowQuantity {
+    pub fn capacity(&self, arc: ArcIndex) -> FlowQuantity {
         let inner = self.solver.inner.as_ref();
 
         unsafe {
             cpp!([
                 inner as "const operations_research::MaxFlow*",
                 arc as "operations_research::ArcIndex"
-            ] -> super::FlowQuantity as "operations_research::FlowQuantity"
+            ] -> FlowQuantity as "operations_research::FlowQuantity"
                 {
                     return inner->Capacity(arc);
                 }

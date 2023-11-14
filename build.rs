@@ -26,6 +26,7 @@ fn main() {
     config
         .flag("-std=c++20")
         // Removing noise outside our jurisdiction
+        .flag("-Wno-sign-compare")
         .flag("-Wno-unused-parameter")
         .build("src/lib.rs");
 }

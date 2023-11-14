@@ -1,13 +1,13 @@
 use itertools::Itertools;
 use or_tools::graph::{
+    ebert_graph::{ArcIndex, NodeIndex, StarGraph},
     max_flow::{MaxFlow, MaxFlowStatus},
-    ArcIndex, NodeIndex, StarGraph,
 };
 
 #[test]
 fn max_flow_simple() {
     // Add each arc.
-    // Arc are stored as {{begin_node, end_node}, capacity}
+    // Arc are stored as (begin_node, end_node, capacity)
     let arcs = &[
         (0, 1, 20),
         (0, 2, 30),
