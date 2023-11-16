@@ -67,6 +67,7 @@ itertools = { workspace = true }
 or-tools-sys = { path = "./sys", version = "9.7.0", optional = true }
 
 cpp = { workspace = true }
+libffi = { workspace = true }
 
 #################
 #   Workspace   #
@@ -95,3 +96,4 @@ cpp = { version = "0.5" }
 cpp_build = { version = "0.5" }
 git2 = { version = "0.18" }
 itertools = { version = "0.11" }
+libffi = { version = "3.2", features = ["system"] }
