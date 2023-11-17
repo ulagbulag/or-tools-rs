@@ -95,5 +95,5 @@ cmake = { version = "0.1" }
 cpp = { version = "0.5" }
 cpp_build = { version = "0.5" }
 git2 = { version = "0.18", default-features = false, features = ["https"] }
-itertools = { version = "0.11" }
+itertools = { version = "0.12" }
 libffi = { version = "3.2", features = ["system"] }
