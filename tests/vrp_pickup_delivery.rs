@@ -154,6 +154,8 @@ fn vrp_pickup_delivery_simple() {
     let solution = routing.solve_with_parameters(&search_parameters);
     let elapsed_ms = instant.elapsed().as_millis();
 
+    assert!(solution.has_contents());
+
     // Check the status.
     let status = solution.status();
     if !matches!(
@@ -174,7 +176,9 @@ fn vrp_pickup_delivery_simple() {
         while !routing.is_end(index) {
             print!("{} -> ", manager.index_to_node(index).value());
             let previous_index = index;
-            index = solution.value(routing.next_var(index).expect("failed to get next var"));
+            index = solution
+                .value(routing.next_var(index).expect("failed to get next var"))
+                .expect("failed to get value");
             route_distance +=
                 routing.get_arc_cost_for_vehicle(previous_index, index, vehicle_id as i64);
         }

@@ -395,11 +395,12 @@ impl<'manager> RoutingModel<'manager> {
                 cpp!([
                     inner as "operations_research::RoutingModel*",
                     search_parameters as "const operations_research::RoutingSearchParameters*"
-                ] -> &super::Assignment as "const operations_research::Assignment*"
+                ] -> *const super::Assignment as "const operations_research::Assignment*"
                     {
                         return inner->SolveWithParameters(*search_parameters);
                     }
                 )
+                .as_ref()
             },
             model: self,
         }
@@ -836,12 +837,17 @@ impl RoutingDimension {
 
 /// Successful output of Routing.
 pub struct Assignment<'manager, 'model> {
-    inner: &'model super::Assignment,
+    inner: Option<&'model super::Assignment>,
     model: &'model RoutingModel<'manager>,
 }
 
 // Assignment inspection
 impl<'manager, 'model> Assignment<'manager, 'model> {
+    /// Returns the result of the routing model is usable.
+    pub fn has_contents(&self) -> bool {
+        self.inner.is_some()
+    }
+
     /// Returns the current status of the routing model.
     pub fn status(&self) -> RoutingModelStatus {
         let model = self.model.inner.as_ref();
@@ -886,10 +892,10 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
     }
 
     #[doc(hidden)]
-    pub fn value(&self, var: &IntVar) -> i64 {
-        let assignment = self.inner;
+    pub fn value(&self, var: &IntVar) -> Option<i64> {
+        let assignment = self.inner?;
 
-        unsafe {
+        Some(unsafe {
             cpp!([
                 assignment as "const operations_research::Assignment*",
                 var as "const operations_research::IntVar*"
@@ -898,16 +904,16 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
                     return assignment->Value(var);
                 }
             )
-        }
+        })
     }
 
     /// Returns the variable index of the node directly after the node
     /// corresponding to `index` in `assignment`.
-    pub fn next(&self, index: i64) -> i64 {
-        let assignment = self.inner;
+    pub fn next(&self, index: i64) -> Option<i64> {
+        let assignment = self.inner?;
         let model = self.model.inner.as_ref();
 
-        unsafe {
+        Some(unsafe {
             cpp!([
                 model as "const operations_research::RoutingModel*",
                 assignment as "const operations_research::Assignment*",
@@ -917,15 +923,15 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
                     return model->Next(*assignment, index);
                 }
             )
-        }
+        })
     }
 
     /// Returns true if the route of `vehicle` is non empty in `assignment`.
-    pub fn is_vehicle_used(&self, vehicle: c_int) -> bool {
-        let assignment = self.inner;
+    pub fn is_vehicle_used(&self, vehicle: c_int) -> Option<bool> {
+        let assignment = self.inner?;
         let model = self.model.inner.as_ref();
 
-        unsafe {
+        Some(unsafe {
             cpp!([
                 model as "const operations_research::RoutingModel*",
                 assignment as "const operations_research::Assignment*",
@@ -935,7 +941,7 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
                     return model->IsVehicleUsed(*assignment, vehicle);
                 }
             )
-        }
+        })
     }
 }
 
