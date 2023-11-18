@@ -15,6 +15,8 @@ fn main() {
             }
         }
         println!("cargo:rustc-link-lib=ortools");
+        println!("cargo:rustc-link-lib=protobuf");
+        println!("cargo:rustc-link-lib=protoc");
     }
 
     // Build
