@@ -201,7 +201,8 @@ impl<'graph, 'solver> MaxFlowOutput<'graph, 'solver> {
             1 => MaxFlowStatus::Optimal,
             2 => MaxFlowStatus::IntOverflow,
             3 => MaxFlowStatus::BadInput,
-            4 | 5.. => MaxFlowStatus::BadResult,
+            4 => MaxFlowStatus::BadResult,
+            5.. => unreachable!(),
         }
     }
 }

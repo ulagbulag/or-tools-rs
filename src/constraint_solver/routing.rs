@@ -852,22 +852,20 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
             ] -> u8 as "uint8_t"
                 {
                     switch (model->status()) {
-                        case operations_research::RoutingModel::Status::RoutingNotSolved:
+                        case operations_research::RoutingModel::Status::ROUTING_NOT_SOLVED:
                             return 0;
-                        case operations_research::RoutingModel::Status::RoutingSuccess:
+                        case operations_research::RoutingModel::Status::ROUTING_SUCCESS:
                             return 1;
-                        case operations_research::RoutingModel::Status::RoutingPartialSuccessLocalOptimumNotReached:
+                        case operations_research::RoutingModel::Status::ROUTING_PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED:
                             return 2;
-                        case operations_research::RoutingModel::Status::RoutingFail:
+                        case operations_research::RoutingModel::Status::ROUTING_FAIL:
                             return 3;
-                        case operations_research::RoutingModel::Status::RoutingFailTimeout:
+                        case operations_research::RoutingModel::Status::ROUTING_FAIL_TIMEOUT:
                             return 4;
-                        case operations_research::RoutingModel::Status::RoutingInvalid:
+                        case operations_research::RoutingModel::Status::ROUTING_INVALID:
                             return 5;
-                        case operations_research::RoutingModel::Status::RoutingInfeasible:
+                        case operations_research::RoutingModel::Status::ROUTING_INFEASIBLE:
                             return 6;
-                        case operations_research::RoutingModel::Status::RoutingOptimal:
-                            return 7;
                         default:
                             return 5;
                     }
@@ -876,15 +874,14 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
         };
 
         match status {
-            0 => MaxFlowStatus::RoutingNotSolved,
-            1 => MaxFlowStatus::RoutingSuccess,
-            2 => MaxFlowStatus::RoutingPartialSuccessLocalOptimumNotReached,
-            3 => MaxFlowStatus::RoutingFail,
-            4 => MaxFlowStatus::RoutingFailTimeout,
-            5 => MaxFlowStatus::RoutingInvalid,
-            6 => MaxFlowStatus::RoutingInfeasible,
-            7 => MaxFlowStatus::RoutingOptimal,
-            .. => MaxFlowStatus::BadResult,
+            0 => RoutingModelStatus::RoutingNotSolved,
+            1 => RoutingModelStatus::RoutingSuccess,
+            2 => RoutingModelStatus::RoutingPartialSuccessLocalOptimumNotReached,
+            3 => RoutingModelStatus::RoutingFail,
+            4 => RoutingModelStatus::RoutingFailTimeout,
+            5 => RoutingModelStatus::RoutingInvalid,
+            6 => RoutingModelStatus::RoutingInfeasible,
+            7.. => unreachable!(),
         }
     }
 
@@ -962,6 +959,4 @@ pub enum RoutingModelStatus {
     RoutingInvalid,
     /// Problem proven to be infeasible.
     RoutingInfeasible,
-    /// Problem has been solved to optimality.
-    RoutingOptimal,
 }

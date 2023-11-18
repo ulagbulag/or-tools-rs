@@ -312,7 +312,8 @@ impl<'graph, 'solver> MinCostFlowOutput<'graph, 'solver> {
             3 => MinCostFlowStatus::Infeasible,
             4 => MinCostFlowStatus::Unbalanced,
             5 => MinCostFlowStatus::BadCostRange,
-            6 | 7.. => MinCostFlowStatus::BadResult,
+            6 => MinCostFlowStatus::BadResult,
+            7.. => unreachable!(),
         }
     }
 }

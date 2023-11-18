@@ -160,7 +160,6 @@ fn vrp_pickup_delivery_simple() {
         status,
         RoutingModelStatus::RoutingSuccess
             | RoutingModelStatus::RoutingPartialSuccessLocalOptimumNotReached
-            | RoutingModelStatus::RoutingOptimal
     ) {
         panic!("failed to solve the routing problem: {status:?}");
     }
