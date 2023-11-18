@@ -842,6 +842,52 @@ pub struct Assignment<'manager, 'model> {
 
 // Assignment inspection
 impl<'manager, 'model> Assignment<'manager, 'model> {
+    /// Returns the current status of the routing model.
+    pub fn status(&self) -> RoutingModelStatus {
+        let model = self.model.inner.as_ref();
+
+        let status = unsafe {
+            cpp!([
+                model as "const operations_research::RoutingModel*"
+            ] -> u8 as "uint8_t"
+                {
+                    switch (model->status()) {
+                        case operations_research::RoutingModel::Status::RoutingNotSolved:
+                            return 0;
+                        case operations_research::RoutingModel::Status::RoutingSuccess:
+                            return 1;
+                        case operations_research::RoutingModel::Status::RoutingPartialSuccessLocalOptimumNotReached:
+                            return 2;
+                        case operations_research::RoutingModel::Status::RoutingFail:
+                            return 3;
+                        case operations_research::RoutingModel::Status::RoutingFailTimeout:
+                            return 4;
+                        case operations_research::RoutingModel::Status::RoutingInvalid:
+                            return 5;
+                        case operations_research::RoutingModel::Status::RoutingInfeasible:
+                            return 6;
+                        case operations_research::RoutingModel::Status::RoutingOptimal:
+                            return 7;
+                        default:
+                            return 5;
+                    }
+                }
+            )
+        };
+
+        match status {
+            0 => MaxFlowStatus::RoutingNotSolved,
+            1 => MaxFlowStatus::RoutingSuccess,
+            2 => MaxFlowStatus::RoutingPartialSuccessLocalOptimumNotReached,
+            3 => MaxFlowStatus::RoutingFail,
+            4 => MaxFlowStatus::RoutingFailTimeout,
+            5 => MaxFlowStatus::RoutingInvalid,
+            6 => MaxFlowStatus::RoutingInfeasible,
+            7 => MaxFlowStatus::RoutingOptimal,
+            .. => MaxFlowStatus::BadResult,
+        }
+    }
+
     #[doc(hidden)]
     pub fn value(&self, var: &IntVar) -> i64 {
         let assignment = self.inner;
@@ -894,4 +940,28 @@ impl<'manager, 'model> Assignment<'manager, 'model> {
             )
         }
     }
+}
+
+/// Solves the problem (finds the maximum flow from the given source to the
+/// given sink), and returns the problem status.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum RoutingModelStatus {
+    /// Problem not solved yet (before calling RoutingModel::solve()).
+    RoutingNotSolved,
+    /// Problem solved successfully after calling RoutingModel::solve().
+    RoutingSuccess,
+    /// Problem solved successfully after calling RoutingModel::solve(), except
+    /// that a local optimum has not been reached. Leaving more time would allow
+    /// improving the solution.
+    RoutingPartialSuccessLocalOptimumNotReached,
+    /// No solution found to the problem after calling RoutingModel::solve().
+    RoutingFail,
+    /// Time limit reached before finding a solution with RoutingModel::solve().
+    RoutingFailTimeout,
+    /// Model, model parameters or flags are not valid.
+    RoutingInvalid,
+    /// Problem proven to be infeasible.
+    RoutingInfeasible,
+    /// Problem has been solved to optimality.
+    RoutingOptimal,
 }

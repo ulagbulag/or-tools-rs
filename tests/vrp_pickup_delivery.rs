@@ -4,7 +4,7 @@ use std::{
 };
 
 use or_tools::constraint_solver::{
-    routing::RoutingModel,
+    routing::{RoutingModel, RoutingModelStatus},
     routing_enums::FirstSolutionStrategy,
     routing_index_manager::{
         RoutingIndexManager, RoutingIndexManagerVehiclePlan, RoutingNodeIndex,
@@ -153,6 +153,17 @@ fn vrp_pickup_delivery_simple() {
     let instant = Instant::now();
     let solution = routing.solve_with_parameters(&search_parameters);
     let elapsed_ms = instant.elapsed().as_millis();
+
+    // Check the status.
+    let status = solution.status();
+    if !matches!(
+        status,
+        RoutingModelStatus::RoutingSuccess
+            | RoutingModelStatus::RoutingPartialSuccessLocalOptimumNotReached
+            | RoutingModelStatus::RoutingOptimal
+    ) {
+        panic!("failed to solve the routing problem: {status:?}");
+    }
 
     // Print solution on console.
     let mut total_distance = 0;
