@@ -1,4 +1,7 @@
-use std::{ffi::c_int, time::Instant};
+use std::{
+    ffi::c_int,
+    time::{Duration, Instant},
+};
 
 use or_tools::constraint_solver::{
     routing::RoutingModel,
@@ -144,6 +147,7 @@ fn vrp_pickup_delivery_simple() {
     // Setting first solution heuristic.
     let mut search_parameters = RoutingSearchParameters::new();
     search_parameters.set_first_solution_strategy(FirstSolutionStrategy::ParallelCheapestInsertion);
+    search_parameters.set_time_limit(Duration::from_secs(1_000));
 
     // Solve the problem.
     let instant = Instant::now();

@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use super::routing_enums::FirstSolutionStrategy;
 
 // IMPORT CXX LIBRARY
@@ -48,7 +50,7 @@ impl RoutingSearchParameters {
         }
     }
 
-    /// Set a parameter: `first_solution_strategy`
+    /// Set first solution strategies, used as starting point of local search.
     pub fn set_first_solution_strategy(&mut self, value: FirstSolutionStrategy) {
         unsafe {
             cpp!([
@@ -57,6 +59,26 @@ impl RoutingSearchParameters {
             ]
                 {
                     return self->set_first_solution_strategy(value);
+                }
+            )
+        }
+    }
+
+    // Set limit to the time spent in the search.
+    pub fn set_time_limit(&mut self, duration: Duration) {
+        let seconds = duration.as_secs();
+        let nanos = duration.subsec_nanos();
+
+        unsafe {
+            cpp!([
+                self as "operations_research::RoutingSearchParameters*",
+                seconds as "uint64_t",
+                nanos as "uint32_t"
+            ]
+                {
+                    auto time_limit = self->mutable_time_limit();
+                    time_limit->set_seconds(seconds);
+                    return time_limit->set_nanos(nanos);
                 }
             )
         }
