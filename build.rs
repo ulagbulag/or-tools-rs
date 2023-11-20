@@ -13,6 +13,8 @@ fn main() {
             for path in env::split_paths(&paths) {
                 println!("cargo:rustc-flags=-L {}", path.display());
             }
+            env::set_var("DEP_PROTOBUF_LIB", &paths);
+            env::set_var("DEP_PROTOC_LIB", &paths);
         }
         println!("cargo:rustc-link-lib=ortools");
         println!("cargo:rustc-link-lib=protobuf");

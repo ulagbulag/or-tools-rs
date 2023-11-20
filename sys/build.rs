@@ -114,6 +114,8 @@ impl Library {
         println!("cargo:lib={}", self.lib.display());
         println!("cargo:rustc-flags=-L {}", self.lib.display());
         println!("cargo:rustc-link-lib=ortools");
+        println!("cargo:rustc-link-lib=protobuf");
+        println!("cargo:rustc-link-lib=protoc");
     }
 }
 
