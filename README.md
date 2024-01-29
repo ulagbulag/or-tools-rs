@@ -49,7 +49,7 @@ Besides, you may claim us whether the specific platform should support it throug
 
 ### Building Native library
 
-`dlib-face-recognition` requires `Or-Tools` to be installed. You can either provide a existing system-wide installation, or build it with this library.
+`or-tools` requires `Or-Tools` to be installed. You can either provide a existing system-wide installation, or build it with this library.
 
 - To build it in compile-time:
   - ```sh
@@ -68,7 +68,7 @@ The `build-native` flag is **disabled by default**, offering increased build tim
 
 ### Building Rust package
 
-`dlib-face-recognition` includes a `solver-all` feature flag **enabled by default**.
+`or-tools` includes a `solver-all` feature flag **enabled by default**.
 
 `solver-all` will enable all kinds of supported **open-source** solvers.
 The latest information about the solvers can be found here: https://github.com/google/or-tools/blob/stable/cmake/README.md#solvers-supported
@@ -77,7 +77,7 @@ The `solver-all` flag can be disabled with `cargo build --no-default-features`.
 
 #### GPL/Proprietary Solvers
 
-`dlib-face-recognition` includes a `solver-all-nonfree` feature flag that can be used with `cargo build --features solver-all-nonfree` .
+`or-tools` includes a `solver-all-nonfree` feature flag that can be used with `cargo build --features solver-all-nonfree` .
 
 `solver-all` will enable all kinds of supported solvers including **GPL** and/or **proprietary** ones.
 The latest information about the solvers can be found here: https://github.com/google/or-tools/blob/stable/cmake/README.md#solvers-supported
