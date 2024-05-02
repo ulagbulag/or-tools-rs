@@ -38,6 +38,8 @@ solver-xpress = []
 
 [build-dependencies]
 cmake = { workspace = true }
-git2 = { workspace = true }
+flate2 = { workspace = true }
+tar = { workspace = true }
+ureq = { workspace = true }
 
 [dependencies]

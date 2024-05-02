@@ -1,4 +1,7 @@
-use std::{env, fs, path::PathBuf};
+use std::{env, path::PathBuf};
+
+use flate2::read::GzDecoder;
+use tar::Archive;
 
 struct Repository {
     path: PathBuf,
@@ -7,39 +10,54 @@ struct Repository {
 impl Default for Repository {
     fn default() -> Self {
         // Configure
-        const URL: &str = "https://github.com/google/or-tools.git";
-        const TAG: &str = concat!(
+        const PREFIX: &str = concat!(
+            "or-tools-",
+            env!("CARGO_PKG_VERSION_MAJOR"),
+            ".",
+            env!("CARGO_PKG_VERSION_MINOR"),
+        );
+        const URL: &str = concat!(
+            "https://github.com/google/or-tools/archive/refs/tags/",
             "v",
             env!("CARGO_PKG_VERSION_MAJOR"),
             ".",
             env!("CARGO_PKG_VERSION_MINOR"),
+            ".tar.gz",
         );
 
         let path = PathBuf::from(
             env::var("OUT_DIR").expect("failed to get environment variable: OUT_DIR"),
         );
 
-        // Clone repository
-        let repo = ::git2::Repository::open(&path).unwrap_or_else(|_| {
-            if path.exists() {
-                fs::remove_dir_all(&path).expect("failed to cleanup output directory");
+        // Download source code
+        let file = {
+            let response = ::ureq::get(URL)
+                .call()
+                .expect("failed to download source code");
+
+            if response.status() != 200 {
+                let code = response.status_text();
+                panic!("failed to download source code {URL:?}: status code {code}");
             }
-            ::git2::Repository::clone(URL, &path).expect("failed to download source code")
-        });
 
-        // Checkout
-        let (object, reference) = repo.revparse_ext(TAG).expect("failed to get Object");
+            response.into_reader()
+        };
 
-        repo.checkout_tree(&object, None)
-            .expect("failed to checkout");
-
-        match reference {
-            // gref is an actual reference like branches or tags
-            Some(gref) => repo.set_head(gref.name().unwrap()),
-            // this is a commit, not a reference
-            None => repo.set_head_detached(object.id()),
-        }
-        .expect("failed to set HEAD");
+        // Extract the download file
+        let mut archive = Archive::new(GzDecoder::new(file));
+        archive
+            .entries()
+            .expect("failed to get entries from downloaded file")
+            .filter_map(Result::ok)
+            .for_each(|mut entry| {
+                if let Some(path) = entry
+                    .path()
+                    .ok()
+                    .and_then(|p| p.strip_prefix(PREFIX).ok().map(|p| path.join(p)))
+                {
+                    entry.unpack(path).expect("failed to extract file");
+                }
+            });
 
         Self { path }
     }
@@ -116,6 +134,7 @@ impl Library {
         println!("cargo:rustc-link-lib=ortools");
         println!("cargo:rustc-link-lib=protobuf");
         println!("cargo:rustc-link-lib=protoc");
+        println!("cargo:rustc-link-search=native={}", self.lib.display());
     }
 }
 

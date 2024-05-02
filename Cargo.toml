@@ -94,6 +94,8 @@ version = "0.1.0"
 cmake = { version = "0.1" }
 cpp = { version = "0.5" }
 cpp_build = { version = "0.5" }
-git2 = { version = "0.18", default-features = false, features = ["https"] }
+flate2 = { version = "1.0" }
 itertools = { version = "0.12" }
 libffi = { version = "3.2", features = ["system"] }
+tar = { version = "0.4" }
+ureq = { version = "2.9", default-features = false, features = ["gzip", "tls"] }
