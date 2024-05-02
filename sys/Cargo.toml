@@ -13,7 +13,7 @@ homepage = { workspace = true }
 repository = { workspace = true }
 
 # [OR-Tools-Major].[OR-Tools-Minor].[sys-patch]
-version = "9.7.0"
+version = "9.9.0"
 
 build = "build.rs"
 links = "ortools"
