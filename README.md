@@ -51,20 +51,26 @@ Besides, you may claim us whether the specific platform should support it throug
 
 `or-tools` requires `Or-Tools` to be installed. You can either provide a existing system-wide installation, or build it with this library.
 
-- To build it in compile-time:
-  - ```sh
-    cargo build --features build-native
-    ```
-- To use a system-wide dependency:
+- To build it in compile-time if there is no system library:
   - ```sh
     cargo build
+    ```
+- To forcely use a system-wide dependency:
+  - ```sh
+    cargo build --no-default-features
+    ```
+- To forcely build it in compile-time:
+  - ```sh
+    cargo build --features build-native-force
     ```
 
 The C++ library `Or-Tools` will be installed via `or-tools-sys` when the `build-native` feature flag is enabled.
 
 For the build, this library uses `cmake`, so please make sure to have [ `cmake` ](https://cmake.org/install/) .
 
-The `build-native` flag is **disabled by default**, offering increased build times.
+The `build-native` flag is **enabled by default**, supporting build speed and convenience at the same time.
+
+The `build-native-force` flag overrides native libraries installed on the system. It is **disabled by default**, offering increased build times.
 
 ### Building Rust package
 

@@ -26,10 +26,11 @@ features = [
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["solver-all"]
+default = ["build-native", "solver-all"]
 
 # Google Or-Tools Builder
 build-native = ["or-tools-sys"]
+build-native-force = ["build-native", "or-tools-sys/build-force"]
 
 # Solvers
 solver-all = [

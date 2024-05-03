@@ -28,6 +28,9 @@ doctest = false
 [features]
 default = []
 
+# Builder
+build-force = []
+
 # Solvers
 solver-coinor = []
 solver-cplex = []

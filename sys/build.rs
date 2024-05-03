@@ -7,8 +7,19 @@ struct Repository {
     path: PathBuf,
 }
 
-impl Default for Repository {
-    fn default() -> Self {
+impl Repository {
+    fn try_new() -> Option<Self> {
+        if !cfg!(feature = "build-force")
+            && env::var("DEP_ORTOOLS_LIB").is_ok()
+            && env::var("DEP_ORTOOLS_INCLUDE").is_ok()
+        {
+            None
+        } else {
+            Some(Self::download())
+        }
+    }
+
+    fn download() -> Self {
         // Configure
         const PREFIX: &str = concat!(
             "or-tools-",
@@ -61,9 +72,7 @@ impl Default for Repository {
 
         Self { path }
     }
-}
 
-impl Repository {
     fn build(&self) -> Library {
         trait CmakeFlag {
             fn to_bool(&self) -> &str;
@@ -141,7 +150,8 @@ impl Library {
 fn main() {
     println!("cargo:rerun-if-changed=./build.rs");
 
-    let repo = Repository::default();
-    let library = repo.build();
-    library.link()
+    if let Some(repo) = Repository::try_new() {
+        let library = repo.build();
+        library.link()
+    }
 }
