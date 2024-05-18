@@ -34,8 +34,8 @@ build-native-force = ["build-native", "or-tools-sys/build-force"]
 
 # Solvers
 solver-all = [
-    "solver-cbc",
-    "solver-clp",
+    #"solver-cbc",
+    #"solver-clp",
     "solver-cp-sat",
     "solver-glop",
     "solver-pdlp",
